@@ -504,8 +504,21 @@ with st.sidebar:
 st.image("B2.png", use_container_width=True)
 
 st.markdown("<div class='main-title'>🔬 Plateforme IA — Propriétés Thermodynamiques</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>LRGP Nancy — Laboratoire Réactions et Génie des Procédés (UMR CNRS 7274)<br>"
-            "<em>Roda Bounaceur, Francisco Paes, Romain Privat, Jean-Noël Jaubert</em></div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>LRGP Nancy — Laboratoire Réactions et Génie des Procédés (UMR CNRS 7274)<br>")
+         
+col_auth, col_contact = st.columns([2, 1])
+with col_auth:
+    st.markdown("""
+    <div style='background-color:#EBF3FB; border-left:4px solid #2E75B6; padding:0.6rem 1rem; border-radius:6px; margin-bottom:0.5rem;'>
+    <b>✍️ Auteurs :</b> Roda BOUNACEUR &nbsp;|&nbsp; Romain Privat &nbsp;|&nbsp; Jean-Noël Jaubert
+    </div>
+    """, unsafe_allow_html=True)
+with col_contact:
+    st.markdown("""
+    <div style='background-color:#EBF3FB; border-left:4px solid #2E75B6; padding:0.6rem 1rem; border-radius:6px; margin-bottom:0.5rem;'>
+    <b>📧 Contact :</b> <a href='mailto:roda@gmail.com'>roda@gmail.com</a>
+    </div>
+    """, unsafe_allow_html=True)
 st.markdown("Pour plus d'informations : [Télécharger l'article (PDF)](https://rdcu.be/eC77w)")
 st.markdown("---")
 
@@ -871,8 +884,6 @@ st.markdown("---")
 st.markdown(
     "<div class='footer'>© 2026 LRGP — Laboratoire Réactions et Génie des Procédés — UMR CNRS 7274"
     "Université de Lorraine, CNRS, LRGP, F-54000 Nancy, France"
-    "Modèles IA développés par Roda Bounaceur — "
-    "Fonctions EOS développées par Romain Privat — "
     "Interface IA développée paar Ndeye Diagne</div>",
     unsafe_allow_html=True
 )
