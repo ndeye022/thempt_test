@@ -324,11 +324,17 @@ def nettoyer_descripteurs(df):
 
 
 def valider_smiles(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    return mol is not None, mol
+    if not smiles or not smiles.strip():
+        return False, None
+    try:
+        mol = Chem.MolFromSmiles(smiles.strip())
+        return mol is not None, mol
+    except Exception:
+        return False, None
 
 
 def predire_proprietes(smiles):
+    smiles = smiles.strip()
     TC_model, PC_model, ACEN_model, NBP_model, TTR_model, VLIQ_model = load_models()
     noms_colonnes = charger_colonnes()
     df_desc = calculer_descripteurs_mordred([smiles])
@@ -459,9 +465,14 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 🔬 À propos")
     st.info(
-        "Cette plateforme utilise des modèles d'intelligence artificielle développés au LRGP pour prédire "
-        "les propriétés thermodynamiques de composés chimiques "
-        "à partir de leur structure moléculaire (SMILES)."
+        "In this paper, we propose a robust deep-learning model based on a Quantitative Structure − Property Relationship" 
+"(QSPR) approach for estimating the critical temperature (TC), critical pressure (PC), acentric factor (ACEN) and nor"
+"mal boiling point (NBP) of any C, H, O, N, S, P, F, Cl, Br, I molecule. The Mordred calculator was used to determine "
+"247 descriptors to characterize the molecules considered in this work. For each evaluated property, multiple neural "
+"networks were trained within a bagging framework. The predictions from the final ensemble were successfully tested "
+"against a large set of experimental data comprising more than 1700 molecules and compared with those from dif"
+"ferent recent learning models found in the literature. Comprehensive comparisons and extensive testing highlight" 
+"the robustness and predictive power of the newly proposed multimodal learning model."
     )
     st.markdown("---")
     st.markdown("### 📋 Propriétés prédites")
@@ -513,22 +524,35 @@ with tab1:
     st.subheader("Prédiction à partir d'une notation SMILES")
     st.write("Entrez la notation SMILES de votre molécule pour obtenir ses propriétés thermodynamiques.")
 
+    # Initialiser la valeur par défaut via session_state
+    if "smiles_tab1" not in st.session_state:
+        st.session_state["smiles_tab1"] = ""
+
+    col_btn_ex = st.columns([1, 1, 2])
+    with col_btn_ex[0]:
+        if st.button("💡 Exemple : Hexane", use_container_width=True):
+            st.session_state["smiles_tab1"] = "CCCCCC"
+    with col_btn_ex[1]:
+        if st.button("💡 Exemple : Éthanol", use_container_width=True):
+            st.session_state["smiles_tab1"] = "CCO"
+    with col_btn_ex[2]:
+        if st.button("💡 Exemple : Benzène", use_container_width=True):
+            st.session_state["smiles_tab1"] = "c1ccccc1"
+
     smiles_input = st.text_input(
         "Notation SMILES",
+        value=st.session_state["smiles_tab1"],
         placeholder="Ex: CCCC (butane), c1ccccc1 (benzène), CCO (éthanol)",
-        help="La notation SMILES est une représentation textuelle de la structure d'une molécule."
+        help="La notation SMILES est une représentation textuelle de la structure d'une molécule.",
+        key="smiles_tab1_input"
     )
+    # Synchroniser la valeur saisie manuellement
+    st.session_state["smiles_tab1"] = smiles_input
 
-    col_btn, col_ex = st.columns([1, 3])
-    with col_btn:
-        predire = st.button("Prédire les propriétés", type="primary", use_container_width=True)
-    with col_ex:
-        if st.button("Utiliser un exemple (Hexane)", use_container_width=True):
-            smiles_input = "CCCCCC"
-            st.rerun()
+    predire = st.button("🔍 Prédire les propriétés", type="primary", use_container_width=False)
 
-    if predire and smiles_input:
-        valide, mol = valider_smiles(smiles_input)
+    if predire and smiles_input and smiles_input.strip():
+        valide, mol = valider_smiles(smiles_input.strip())
         if not valide:
             st.error("❌ SMILES invalide. Vérifiez la notation et réessayez.")
         else:
