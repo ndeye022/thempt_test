@@ -501,21 +501,7 @@ with st.sidebar:
 ######################################################################################################
 
 # ── Image bannière en haut de page ──────────────────────────────────────────
-import pathlib, os as _os
-
-_banner_candidates = ["B2.png"]
-_base_dir = _os.path.dirname(_os.path.abspath(__file__))
-_banner_found = None
-for _fname in _banner_candidates:
-    _p = _os.path.join(_base_dir, _fname)
-    if _os.path.exists(_p):
-        _banner_found = _p
-        break
-
-if _banner_found:
-    st.image(_banner_found, use_container_width=True)
-else:
-    st.info("💡 Image bannière introuvable. Placez le fichier B2.JPG (ou B2.png) dans le même dossier que app.py")
+st.image("B2.png", use_container_width=True)
 
 st.markdown("<div class='main-title'>🔬 Plateforme IA — Propriétés Thermodynamiques</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>LRGP Nancy — Laboratoire Réactions et Génie des Procédés (UMR CNRS 7274)<br>"
