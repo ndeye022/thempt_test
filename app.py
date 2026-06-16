@@ -500,6 +500,23 @@ with st.sidebar:
 ## En-tête principal
 ######################################################################################################
 
+# ── Image bannière en haut de page ──────────────────────────────────────────
+import pathlib, os as _os
+
+_banner_candidates = ["B2.png"]
+_base_dir = _os.path.dirname(_os.path.abspath(__file__))
+_banner_found = None
+for _fname in _banner_candidates:
+    _p = _os.path.join(_base_dir, _fname)
+    if _os.path.exists(_p):
+        _banner_found = _p
+        break
+
+if _banner_found:
+    st.image(_banner_found, use_container_width=True)
+else:
+    st.info("💡 Image bannière introuvable. Placez le fichier B2.JPG (ou B2.png) dans le même dossier que app.py")
+
 st.markdown("<div class='main-title'>🔬 Plateforme IA — Propriétés Thermodynamiques</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>LRGP Nancy — Laboratoire Réactions et Génie des Procédés (UMR CNRS 7274)<br>"
             "<em>Roda Bounaceur, Francisco Paes, Romain Privat, Jean-Noël Jaubert</em></div>", unsafe_allow_html=True)
@@ -759,34 +776,55 @@ with tab4:
         horizontal=True
     )
 
-    smiles_eos = None
+    smiles_eos_clean = ""
 
     if eos_mode == "📝 Entrer un SMILES":
-        smiles_eos = st.text_input(
+        # Même pattern que l'onglet 1 : session_state + key uniquement
+        if "smiles_eos_val" not in st.session_state:
+            st.session_state["smiles_eos_val"] = ""
+
+        col_eos_ex = st.columns([1, 1, 1, 1])
+        with col_eos_ex[0]:
+            if st.button("💡 Hexane", key="eos_ex_hexane", use_container_width=True):
+                st.session_state["smiles_eos_val"] = "CCCCCC"
+        with col_eos_ex[1]:
+            if st.button("💡 Éthanol", key="eos_ex_ethanol", use_container_width=True):
+                st.session_state["smiles_eos_val"] = "CCO"
+        with col_eos_ex[2]:
+            if st.button("💡 Benzène", key="eos_ex_benzene", use_container_width=True):
+                st.session_state["smiles_eos_val"] = "c1ccccc1"
+        with col_eos_ex[3]:
+            if st.button("💡 Butane", key="eos_ex_butane", use_container_width=True):
+                st.session_state["smiles_eos_val"] = "CCCC"
+
+        smiles_eos_input = st.text_input(
             "Notation SMILES pour l'EOS",
-            placeholder="Ex: CCCCCC (hexane), CCO (éthanol)",
-            key="eos_smiles_input"
+            key="smiles_eos_val",
+            placeholder="Ex: CCCCCC (hexane), CCO (éthanol)"
         )
+        smiles_eos_clean = smiles_eos_input.strip() if smiles_eos_input else ""
+
     else:
         st.write("Dessinez votre molécule :")
-        smiles_eos = st_ketcher(key="eos_ketcher")
-        if smiles_eos:
-            st.markdown(f"**SMILES généré :** `{smiles_eos}`")
+        smiles_eos_drawn = st_ketcher(key="eos_ketcher")
+        if smiles_eos_drawn:
+            smiles_eos_clean = smiles_eos_drawn.strip()
+            st.markdown(f"**SMILES généré :** `{smiles_eos_clean}`")
 
     lancer_eos = st.button("🚀 Calculer les courbes EOS", type="primary")
 
-    if lancer_eos and smiles_eos:
-        valide, mol_eos = valider_smiles(smiles_eos)
+    if lancer_eos and smiles_eos_clean:
+        valide, mol_eos = valider_smiles(smiles_eos_clean)
         if not valide:
             st.error("❌ SMILES invalide.")
         else:
-            atome_interdit, sym = verifier_symboles(smiles_eos)
+            atome_interdit, sym = verifier_symboles(smiles_eos_clean)
             if atome_interdit:
                 st.warning(f"⚠️ Atome non supporté détecté : `{sym}`")
             else:
                 with st.spinner("⏳ Prédiction des propriétés et calcul EOS en cours..."):
                     try:
-                        tc, pc, acen, nbp, ttr, vliq = predire_proprietes(smiles_eos)
+                        tc, pc, acen, nbp, ttr, vliq = predire_proprietes(smiles_eos_clean)
 
                         if tc == 88888:
                             st.error("❌ Molécule non supportée par les modèles IA.")
@@ -800,7 +838,7 @@ with tab4:
 
                             with col_mol_eos:
                                 img_eos = Draw.MolToImage(mol_eos, size=(250, 200))
-                                st.image(img_eos, caption=f"SMILES : {smiles_eos}")
+                                st.image(img_eos, caption=f"SMILES : {smiles_eos_clean}")
 
                             with col_prop_eos:
                                 ca, cb, cc = st.columns(3)
