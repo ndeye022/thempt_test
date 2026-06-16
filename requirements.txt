@@ -5,4 +5,4 @@ joblib
 scikit-learn
 plotly.express
 streamlit_ketcher
-streamlit==1.22.0
+streamlit==1.35.0
