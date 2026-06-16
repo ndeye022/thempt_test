@@ -504,7 +504,7 @@ with st.sidebar:
 st.image("B2.png", use_container_width=True)
 
 st.markdown("<div class='main-title'>🔬 Plateforme IA — Propriétés Thermodynamiques</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>LRGP Nancy — Laboratoire Réactions et Génie des Procédés (UMR CNRS 7274)<br>")
+st.markdown("<div class='subtitle'>LRGP Nancy — Laboratoire Réactions et Génie des Procédés (UMR CNRS 7274)</div>", unsafe_allow_html=True)
          
 col_auth, col_contact = st.columns([2, 1])
 with col_auth:
@@ -516,7 +516,7 @@ with col_auth:
 with col_contact:
     st.markdown("""
     <div style='background-color:#EBF3FB; border-left:4px solid #2E75B6; padding:0.6rem 1rem; border-radius:6px; margin-bottom:0.5rem;'>
-    <b>📧 Contact :</b> <a href='mailto:roda@gmail.com'>roda@gmail.com</a>
+    <b>📧 Contact :</b> <a href='mailto:roda.bounaceur@univ-lorraine.fr'>roda.bounaceur@univ-lorraine.fr</a>
     </div>
     """, unsafe_allow_html=True)
 st.markdown("Pour plus d'informations : [Télécharger l'article (PDF)](https://rdcu.be/eC77w)")
