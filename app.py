@@ -465,9 +465,14 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 🔬 À propos")
     st.info(
-        "Cette plateforme utilise des modèles d'intelligence artificielle développés au LRGP pour prédire "
-        "les propriétés thermodynamiques de composés chimiques "
-        "à partir de leur structure moléculaire (SMILES)."
+        "In this paper, we propose a robust deep-learning model based on a Quantitative Structure − Property Relationship" 
+"(QSPR) approach for estimating the critical temperature (TC), critical pressure (PC), acentric factor (ACEN) and nor"
+"mal boiling point (NBP) of any C, H, O, N, S, P, F, Cl, Br, I molecule. The Mordred calculator was used to determine "
+"247 descriptors to characterize the molecules considered in this work. For each evaluated property, multiple neural "
+"networks were trained within a bagging framework. The predictions from the final ensemble were successfully tested "
+"against a large set of experimental data comprising more than 1700 molecules and compared with those from dif"
+"ferent recent learning models found in the literature. Comprehensive comparisons and extensive testing highlight" 
+"the robustness and predictive power of the newly proposed multimodal learning model."
     )
     st.markdown("---")
     st.markdown("### 📋 Propriétés prédites")
