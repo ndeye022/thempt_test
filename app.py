@@ -869,9 +869,10 @@ with tab4:
 
 st.markdown("---")
 st.markdown(
-    "<div class='footer'>© 2025 LRGP — Laboratoire Réactions et Génie des Procédés — UMR CNRS 7274 — ENSIC Nancy<br>"
+    "<div class='footer'>© 2026 LRGP — Laboratoire Réactions et Génie des Procédés — UMR CNRS 7274"
+    "Université de Lorraine, CNRS, LRGP, F-54000 Nancy, France"
     "Modèles IA développés par Roda Bounaceur — "
     "Fonctions EOS développées par Romain Privat — "
-    "Interface IA développée dans le cadre d'un stage ingénieur</div>",
+    "Interface IA développée paar Ndeye Diagne</div>",
     unsafe_allow_html=True
 )
