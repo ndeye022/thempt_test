@@ -465,14 +465,9 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 🔬 À propos")
     st.info(
-        "In this paper, we propose a robust deep-learning model based on a Quantitative Structure − Property Relationship" 
-"(QSPR) approach for estimating the critical temperature (TC), critical pressure (PC), acentric factor (ACEN) and nor"
-"mal boiling point (NBP) of any C, H, O, N, S, P, F, Cl, Br, I molecule. The Mordred calculator was used to determine "
-"247 descriptors to characterize the molecules considered in this work. For each evaluated property, multiple neural "
-"networks were trained within a bagging framework. The predictions from the final ensemble were successfully tested "
-"against a large set of experimental data comprising more than 1700 molecules and compared with those from dif"
-"ferent recent learning models found in the literature. Comprehensive comparisons and extensive testing highlight" 
-"the robustness and predictive power of the newly proposed multimodal learning model."
+        "Cette plateforme utilise des modèles d'intelligence artificielle développés au LRGP pour prédire "
+        "les propriétés thermodynamiques de composés chimiques "
+        "à partir de leur structure moléculaire (SMILES)."
     )
     st.markdown("---")
     st.markdown("### 📋 Propriétés prédites")
@@ -524,45 +519,48 @@ with tab1:
     st.subheader("Prédiction à partir d'une notation SMILES")
     st.write("Entrez la notation SMILES de votre molécule pour obtenir ses propriétés thermodynamiques.")
 
-    # Initialiser la valeur par défaut via session_state
-    if "smiles_tab1" not in st.session_state:
-        st.session_state["smiles_tab1"] = ""
+    # Initialiser la clé session_state qui pilote le text_input
+    if "smiles_tab1_val" not in st.session_state:
+        st.session_state["smiles_tab1_val"] = ""
 
-    col_btn_ex = st.columns([1, 1, 2])
+    # Boutons exemples : écrivent directement dans la clé du widget
+    col_btn_ex = st.columns([1, 1, 1, 1])
     with col_btn_ex[0]:
-        if st.button("💡 Exemple : Hexane", use_container_width=True):
-            st.session_state["smiles_tab1"] = "CCCCCC"
+        if st.button("💡 Hexane", use_container_width=True):
+            st.session_state["smiles_tab1_val"] = "CCCCCC"
     with col_btn_ex[1]:
-        if st.button("💡 Exemple : Éthanol", use_container_width=True):
-            st.session_state["smiles_tab1"] = "CCO"
+        if st.button("💡 Éthanol", use_container_width=True):
+            st.session_state["smiles_tab1_val"] = "CCO"
     with col_btn_ex[2]:
-        if st.button("💡 Exemple : Benzène", use_container_width=True):
-            st.session_state["smiles_tab1"] = "c1ccccc1"
+        if st.button("💡 Benzène", use_container_width=True):
+            st.session_state["smiles_tab1_val"] = "c1ccccc1"
+    with col_btn_ex[3]:
+        if st.button("💡 Butane", use_container_width=True):
+            st.session_state["smiles_tab1_val"] = "CCCC"
 
     smiles_input = st.text_input(
         "Notation SMILES",
-        value=st.session_state["smiles_tab1"],
+        key="smiles_tab1_val",
         placeholder="Ex: CCCC (butane), c1ccccc1 (benzène), CCO (éthanol)",
-        help="La notation SMILES est une représentation textuelle de la structure d'une molécule.",
-        key="smiles_tab1_input"
+        help="La notation SMILES est une représentation textuelle de la structure d'une molécule."
     )
-    # Synchroniser la valeur saisie manuellement
-    st.session_state["smiles_tab1"] = smiles_input
 
-    predire = st.button("🔍 Prédire les propriétés", type="primary", use_container_width=False)
+    predire = st.button("🔍 Prédire les propriétés", type="primary")
 
-    if predire and smiles_input and smiles_input.strip():
-        valide, mol = valider_smiles(smiles_input.strip())
+    smiles_clean = smiles_input.strip() if smiles_input else ""
+
+    if predire and smiles_clean:
+        valide, mol = valider_smiles(smiles_clean)
         if not valide:
             st.error("❌ SMILES invalide. Vérifiez la notation et réessayez.")
         else:
-            atome_interdit, sym = verifier_symboles(smiles_input)
+            atome_interdit, sym = verifier_symboles(smiles_clean)
             if atome_interdit:
                 st.warning(f"⚠️ Atome non supporté détecté : `{sym}`")
 
             with st.spinner("⏳ Calcul des descripteurs et prédiction en cours..."):
                 try:
-                    tc, pc, acen, nbp, ttr, vliq = predire_proprietes(smiles_input)
+                    tc, pc, acen, nbp, ttr, vliq = predire_proprietes(smiles_clean)
                     st.success("✅ Prédiction réussie !")
                     st.markdown("---")
 
@@ -571,7 +569,7 @@ with tab1:
                     with col_mol:
                         st.markdown("#### Structure moléculaire")
                         img = Draw.MolToImage(mol, size=(300, 250))
-                        st.image(img, caption=f"SMILES : {smiles_input}")
+                        st.image(img, caption=f"SMILES : {smiles_clean}")
                         inchikey = rdkit.Chem.inchi.MolToInchiKey(mol)
                         smiles_canon = Chem.MolToSmiles(mol)
                         st.markdown(f"**SMILES canonique :** `{smiles_canon}`")
@@ -609,7 +607,7 @@ with tab1:
                         st.download_button(
                             label="⬇️ Télécharger les résultats (CSV)",
                             data=csv,
-                            file_name=f"proprietes_{smiles_input[:10]}.csv",
+                            file_name=f"proprietes_{smiles_clean[:10]}.csv",
                             mime="text/csv"
                         )
 
