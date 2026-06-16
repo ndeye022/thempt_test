@@ -5,4 +5,6 @@ joblib
 scikit-learn
 plotly.express
 streamlit_ketcher
-streamlit==1.35.0
+numpy
+pandas
+streamlit
